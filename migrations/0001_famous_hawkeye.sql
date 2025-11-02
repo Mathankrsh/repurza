@@ -1,0 +1,1 @@
+ALTER TABLE "blogs" ADD COLUMN "tiptap_content" jsonb DEFAULT '{}' NOT NULL;

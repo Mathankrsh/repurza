@@ -3,20 +3,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostHeader } from "@/components/post-header";
-import markdownToHtml from "@/lib/markdown-to-html";
-import { getBlogs, getPostBySlug } from "@/server/blogs";
-import ActionButtons from "./_components/action-buttons";
-import BlogContentClient from "./blog-content-client";
+import { getPostBySlug } from "@/server/blogs";
+import ActionButtons from "../_components/action-buttons";
+import BlogEditorClient from "./blog-editor-client";
 
-export default async function Post(props: Params) {
+export default async function EditPost(props: Params) {
   const params = await props.params;
   const post = await getPostBySlug(params.slug);
 
   if (!post) {
     return notFound();
   }
-
-  const content = await markdownToHtml(post.content || "");
 
   return (
     <main className="mt-20">
@@ -29,7 +26,7 @@ export default async function Post(props: Params) {
             title={post.title}
           />
           <div className="mx-auto max-w-4xl">
-            <BlogContentClient content={post.content || ""} slug={post.slug} />
+            <BlogEditorClient content={post.content || ""} />
           </div>
         </article>
       </div>
@@ -51,7 +48,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
     return notFound();
   }
 
-  const title = `${post.title} | ${post.author}`;
+  const title = `Edit: ${post.title} | ${post.author}`;
 
   return {
     title,
@@ -59,12 +56,4 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
       title,
     },
   };
-}
-
-export async function generateStaticParams() {
-  const posts = await getBlogs();
-
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
 }

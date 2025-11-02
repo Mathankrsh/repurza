@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { boolean, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, jsonb, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 
 export const blogs = pgTable("blogs", {
   id: serial("id").primaryKey(),
@@ -9,6 +9,7 @@ export const blogs = pgTable("blogs", {
   slug: text("slug").notNull(),
   title: text("title").notNull(),
   content: text("content").notNull(),
+  tiptapContent: jsonb("tiptap_content").default("{}").notNull(),
   author: text("author").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
