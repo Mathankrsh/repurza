@@ -21,7 +21,6 @@ import type { SelectBlog } from "@/db/schema";
 import { authClient } from "@/lib/auth-client";
 import { checkBlogExists } from "@/server/blogs";
 import { extractVideoId } from "@/lib/youtube";
-import { BlogCard } from "../blog-card";
 import { ButtonGroup } from "../ui/button-group";
 
 const formSchema = z.object({
@@ -50,12 +49,6 @@ type GenerateResponse = {
 export function MainForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [blog, setBlog] = useState<SelectBlog | null>(null);
-  const [thread, setThread] = useState<SelectBlog | null>(null);
-  const [bothContent, setBothContent] = useState<{
-    blog: SelectBlog;
-    thread: SelectBlog;
-  } | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -227,96 +220,7 @@ export function MainForm() {
         </form>
       </Form>
 
-      {/* Blog Content Display */}
-      {blog && (
-        <div className="absolute mt-3 flex max-w-3xl flex-col gap-4">
-          <div className="flex justify-end gap-2">
-            <Button asChild variant="outline">
-              <Link href={`/content/${extractVideoId(blog.slug)}`}>View & Edit</Link>
-            </Button>
 
-            <Button
-              onClick={() => {
-                navigator.clipboard.writeText(blog.content);
-                toast.success("Blog has been copied to clipboard.");
-              }}
-              variant="outline"
-            >
-              Copy Markdown
-            </Button>
-          </div>
-
-          <BlogCard blog={blog} />
-        </div>
-      )}
-
-      {/* Thread Content Display */}
-      {thread && (
-        <div className="absolute mt-3 flex max-w-3xl flex-col gap-4">
-          <div className="flex justify-end gap-2">
-            <Button asChild variant="outline">
-              <Link href={`/content/${extractVideoId(thread.slug)}`}>View & Edit</Link>
-            </Button>
-
-            <Button
-              onClick={() => {
-                navigator.clipboard.writeText(thread.content);
-                toast.success("Thread has been copied to clipboard.");
-              }}
-              variant="outline"
-            >
-              Copy Thread
-            </Button>
-          </div>
-
-          <BlogCard blog={thread} />
-        </div>
-      )}
-
-      {/* Both Content Display */}
-      {bothContent && (
-        <div className="absolute mt-3 flex max-w-3xl flex-col gap-4">
-          <div className="flex justify-end gap-2">
-            <Button asChild variant="outline">
-              <Link href={`/content/${extractVideoId(bothContent.blog.slug)}`}>
-                View & Edit Both
-              </Link>
-            </Button>
-
-            <Button
-              onClick={() => {
-                navigator.clipboard.writeText(bothContent.blog.content);
-                toast.success("Blog has been copied to clipboard.");
-              }}
-              variant="outline"
-            >
-              Copy Blog
-            </Button>
-
-            <Button
-              onClick={() => {
-                navigator.clipboard.writeText(bothContent.thread.content);
-                toast.success("Thread has been copied to clipboard.");
-              }}
-              variant="outline"
-            >
-              Copy Thread
-            </Button>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <h3 className="font-semibold text-lg mb-2">Blog Content</h3>
-              <BlogCard blog={bothContent.blog} />
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-lg mb-2">Thread Content</h3>
-              <BlogCard blog={bothContent.thread} />
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }

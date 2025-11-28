@@ -18,9 +18,18 @@ export default function ContentPageClient({ videoData }: ContentPageClientProps)
     videoData.blog ? "blog" : videoData.thread ? "thread" : null
   );
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSwitching, setIsSwitching] = useState(false);
 
   const handleContentTypeChange = (type: ContentType) => {
-    setActiveContentType(type);
+    console.log('Content type changing from', activeContentType, 'to', type);
+    if (type !== activeContentType) {
+      setIsSwitching(true);
+      // Small delay to show loading state
+      setTimeout(() => {
+        setActiveContentType(type);
+        setIsSwitching(false);
+      }, 100);
+    }
   };
 
   const handleToggleSidebar = () => {
@@ -40,7 +49,16 @@ export default function ContentPageClient({ videoData }: ContentPageClientProps)
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        {activeContentType ? (
+        {isSwitching ? (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center space-y-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+              <p className="text-sm text-muted-foreground">
+                Switching content...
+              </p>
+            </div>
+          </div>
+        ) : activeContentType ? (
           <ContentEditor
             videoData={videoData}
             contentType={activeContentType}

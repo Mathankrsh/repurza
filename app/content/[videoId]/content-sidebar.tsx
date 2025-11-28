@@ -80,7 +80,10 @@ export function ContentSidebar({
               variant={activeContentType === "blog" ? "default" : "outline"}
               size="sm"
               className="w-full justify-start"
-              onClick={() => onContentTypeChange("blog")}
+              onClick={() => {
+                console.log('Blog button clicked, hasBlog:', hasBlog);
+                onContentTypeChange("blog");
+              }}
               disabled={!hasBlog}
             >
               <FileText className="h-4 w-4 mr-2" />
@@ -92,7 +95,10 @@ export function ContentSidebar({
               variant={activeContentType === "thread" ? "default" : "outline"}
               size="sm"
               className="w-full justify-start"
-              onClick={() => onContentTypeChange("thread")}
+              onClick={() => {
+                console.log('Thread button clicked, hasThread:', hasThread);
+                onContentTypeChange("thread");
+              }}
               disabled={!hasThread}
             >
               <MessageCircle className="h-4 w-4 mr-2" />
