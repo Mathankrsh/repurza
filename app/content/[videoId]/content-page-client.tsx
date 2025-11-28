@@ -21,7 +21,6 @@ export default function ContentPageClient({ videoData }: ContentPageClientProps)
   const [isSwitching, setIsSwitching] = useState(false);
 
   const handleContentTypeChange = (type: ContentType) => {
-    console.log('Content type changing from', activeContentType, 'to', type);
     if (type !== activeContentType) {
       setIsSwitching(true);
       // Small delay to show loading state

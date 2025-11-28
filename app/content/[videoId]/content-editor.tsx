@@ -28,16 +28,6 @@ export function ContentEditor({ videoData, contentType }: ContentEditorProps) {
 
   const content = contentType === "blog" ? videoData.blog : videoData.thread;
 
-  // Debug logging
-  console.log('ContentEditor render:', { 
-    contentType, 
-    hasContent: !!content,
-    contentTitle: content?.title,
-    videoId: videoData.videoId,
-    hasBlog: !!videoData.blog,
-    hasThread: !!videoData.thread
-  });
-
 // Use the existing markdown library for reliable conversion
   const processMarkdownToHtml = (markdown: string): string => {
     if (!markdown) return "";
@@ -52,7 +42,6 @@ export function ContentEditor({ videoData, contentType }: ContentEditorProps) {
 
   // Process content for both display and editing - convert markdown to HTML if needed
   const processedContent = useMemo(() => {
-    console.log('Processing content for type:', contentType, 'content:', !!content);
     if (!content) return "";
     return processMarkdownToHtml(content.content);
   }, [content, contentType]);
