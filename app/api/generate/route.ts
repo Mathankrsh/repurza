@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { generateBlog, generateBothContentTypes } from "@/server/ai";
+import { extractVideoId } from "@/lib/youtube";
 
 // Request validation schema
 const GenerateRequestSchema = z.object({
@@ -26,6 +27,7 @@ export async function POST(request: NextRequest) {
           data: {
             type: "blog",
             content: blogResult,
+            videoId: extractVideoId(blogResult.slug),
             message: "Blog generated successfully",
           },
         });
@@ -39,6 +41,7 @@ export async function POST(request: NextRequest) {
           data: {
             type: "thread",
             content: bothResult.thread,
+            videoId: extractVideoId(bothResult.thread.slug),
             message: "Thread generated successfully",
           },
         });
@@ -52,6 +55,7 @@ export async function POST(request: NextRequest) {
             type: "both",
             blog: bothContentResult.blog,
             thread: bothContentResult.thread,
+            videoId: extractVideoId(bothContentResult.blog.slug),
             message: "Both blog and thread generated successfully",
           },
         });

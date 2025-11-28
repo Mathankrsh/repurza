@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, FileText, MessageCircle } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -19,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import type { SelectBlog } from "@/db/schema";
 import { authClient } from "@/lib/auth-client";
 import { checkBlogExists } from "@/server/blogs";
+import { extractVideoId } from "@/lib/youtube";
 import { BlogCard } from "../blog-card";
 import { ButtonGroup } from "../ui/button-group";
 
@@ -38,6 +40,7 @@ type GenerateResponse = {
     content?: SelectBlog;
     blog?: SelectBlog;
     thread?: SelectBlog;
+    videoId?: string;
     message: string;
   };
   error?: string;
@@ -45,6 +48,7 @@ type GenerateResponse = {
 };
 
 export function MainForm() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [blog, setBlog] = useState<SelectBlog | null>(null);
   const [thread, setThread] = useState<SelectBlog | null>(null);
@@ -102,15 +106,28 @@ export function MainForm() {
       // Handle different response types
       switch (result.data?.type) {
         case "blog":
-          setBlog(result.data.content || null);
-          toast.success("Blog has been created.");
+          if (result.data?.videoId) {
+            router.push(`/content/${result.data.videoId}`);
+            toast.success("Blog has been created.");
+          } else {
+            setBlog(result.data.content || null);
+            toast.success("Blog has been created.");
+          }
           break;
         case "thread":
-          setThread(result.data.content || null);
-          toast.success("Thread has been created.");
+          if (result.data?.videoId) {
+            router.push(`/content/${result.data.videoId}`);
+            toast.success("Thread has been created.");
+          } else {
+            setThread(result.data.content || null);
+            toast.success("Thread has been created.");
+          }
           break;
         case "both":
-          if (result.data.blog && result.data.thread) {
+          if (result.data?.videoId) {
+            router.push(`/content/${result.data.videoId}`);
+            toast.success("Both blog and thread have been created.");
+          } else if (result.data.blog && result.data.thread) {
             setBothContent({
               blog: result.data.blog,
               thread: result.data.thread,
@@ -215,7 +232,7 @@ export function MainForm() {
         <div className="absolute mt-3 flex max-w-3xl flex-col gap-4">
           <div className="flex justify-end gap-2">
             <Button asChild variant="outline">
-              <Link href={`/generate/${blog.slug}`}>View & Edit</Link>
+              <Link href={`/content/${extractVideoId(blog.slug)}`}>View & Edit</Link>
             </Button>
 
             <Button
@@ -238,7 +255,7 @@ export function MainForm() {
         <div className="absolute mt-3 flex max-w-3xl flex-col gap-4">
           <div className="flex justify-end gap-2">
             <Button asChild variant="outline">
-              <Link href={`/generate/${thread.slug}`}>View & Edit</Link>
+              <Link href={`/content/${extractVideoId(thread.slug)}`}>View & Edit</Link>
             </Button>
 
             <Button
@@ -261,7 +278,7 @@ export function MainForm() {
         <div className="absolute mt-3 flex max-w-3xl flex-col gap-4">
           <div className="flex justify-end gap-2">
             <Button asChild variant="outline">
-              <Link href={`/generate/${bothContent.blog.slug}`}>
+              <Link href={`/content/${extractVideoId(bothContent.blog.slug)}`}>
                 View & Edit Both
               </Link>
             </Button>
