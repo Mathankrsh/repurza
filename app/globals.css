@@ -191,7 +191,7 @@
   body {
     @apply bg-background text-foreground;
   }
-  
+
   /* Tiptap Editor Styles */
   .ProseMirror {
     outline: none;
@@ -204,7 +204,7 @@
     font-size: 1rem;
     line-height: 1.5;
   }
-  
+
   .ProseMirror p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;
@@ -212,12 +212,12 @@
     pointer-events: none;
     height: 0;
   }
-  
+
   .ProseMirror ul,
   .ProseMirror ol {
     padding-left: 1.5rem;
   }
-  
+
   .ProseMirror h1,
   .ProseMirror h2,
   .ProseMirror h3,
@@ -229,36 +229,36 @@
     margin-bottom: 0.5rem;
     font-weight: 600;
   }
-  
+
   .ProseMirror h1 {
     font-size: 2.25rem;
   }
-  
+
   .ProseMirror h2 {
     font-size: 1.875rem;
   }
-  
+
   .ProseMirror h3 {
     font-size: 1.5rem;
   }
-  
+
   .ProseMirror h4 {
     font-size: 1.25rem;
   }
-  
+
   .ProseMirror h5 {
     font-size: 1.125rem;
   }
-  
+
   .ProseMirror h6 {
     font-size: 1rem;
   }
-  
+
   .ProseMirror p {
     margin-top: 0.75rem;
     margin-bottom: 0.75rem;
   }
-  
+
   .ProseMirror blockquote {
     border-left: 4px solid hsl(var(--border));
     margin: 1rem 0;
@@ -266,7 +266,7 @@
     font-style: italic;
     color: hsl(var(--muted-foreground));
   }
-  
+
   .ProseMirror pre {
     background: hsl(var(--muted));
     border-radius: 0.375rem;
@@ -274,37 +274,37 @@
     overflow-x: auto;
     margin: 1rem 0;
   }
-  
+
   .ProseMirror code {
     background: hsl(var(--muted));
     padding: 0.125rem 0.25rem;
     border-radius: 0.25rem;
     font-size: 0.875em;
   }
-  
+
   .ProseMirror pre code {
     background: none;
     padding: 0;
     font-size: 0.875em;
   }
-  
+
   .ProseMirror a {
     color: hsl(var(--primary));
     text-decoration: underline;
   }
-  
+
   .ProseMirror img {
     max-width: 100%;
     height: auto;
     border-radius: 0.375rem;
     margin: 1rem 0;
   }
-  
+
   .ProseMirror:focus {
     border-color: hsl(var(--ring));
     box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
   }
-  
+
   .ProseMirror p.is-editor-empty::before {
     content: attr(data-placeholder);
     float: left;
@@ -312,7 +312,7 @@
     pointer-events: none;
     height: 0;
   }
-  
+
   /* Toolbar Styles */
   .tiptap-toolbar {
     display: flex;
@@ -324,7 +324,7 @@
     background: hsl(var(--card));
     flex-wrap: wrap;
   }
-  
+
   .tiptap-toolbar button {
     padding: 0.375rem 0.5rem;
     border: none;
@@ -335,56 +335,178 @@
     transition: all 0.1s ease;
     font-size: 0.875rem;
   }
-  
+
   .tiptap-toolbar button:hover {
     background: hsl(var(--muted));
   }
-  
+
   .tiptap-toolbar button.active {
     background: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
   }
-  
+
   .tiptap-toolbar button svg {
     width: 1rem;
     height: 1rem;
   }
-  
+
   .tiptap-toolbar .separator {
     width: 1px;
     background: hsl(var(--border));
     margin: 0 0.25rem;
   }
-  
+
   .tiptap-toolbar .character-count {
     margin-left: auto;
     font-size: 0.75rem;
     color: hsl(var(--muted-foreground));
   }
-  
+
   /* Dark mode styles */
   .dark .ProseMirror {
     background: hsl(var(--card));
     border-color: hsl(var(--border));
     color: hsl(var(--foreground));
   }
-  
+
   .dark .tiptap-toolbar {
     background: hsl(var(--card));
     border-color: hsl(var(--border));
   }
-  
+
   .dark .tiptap-toolbar button:hover {
     background: hsl(var(--muted));
   }
-  
+
   .dark .tiptap-toolbar button.active {
     background: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
   }
+
+  /* Task List Styles */
+  .ProseMirror .task-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+
+  .ProseMirror .task-list li {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+  }
+
+  .ProseMirror .task-list li > label {
+    flex: 0 0 auto;
+    margin-right: 0.5rem;
+    margin-top: 0.125rem;
+    user-select: none;
+  }
+
+  .ProseMirror .task-list li > div {
+    flex: 1 1 auto;
+  }
+
+  .ProseMirror .task-list input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.25rem;
+    background: hsl(var(--background));
+    cursor: pointer;
+    margin: 0;
+  }
+
+  .ProseMirror .task-list input[type="checkbox"]:checked {
+    background: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+  }
+
+  .ProseMirror .task-list input[type="checkbox"]:checked::after {
+    content: "✓";
+    display: block;
+    text-align: center;
+    color: white;
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  .ProseMirror .task-item[data-checked="true"] div {
+    text-decoration: line-through;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Table Styles */
+  .ProseMirror table {
+    border-collapse: collapse;
+    margin: 1rem 0;
+    overflow: hidden;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  .ProseMirror table td,
+  .ProseMirror table th {
+    border: 1px solid hsl(var(--border));
+    box-sizing: border-box;
+    min-width: 1em;
+    padding: 0.5rem;
+    position: relative;
+    vertical-align: top;
+  }
+
+  .ProseMirror table th {
+    background: hsl(var(--muted));
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .ProseMirror table .selectedCell:after {
+    background: hsl(var(--primary) / 0.1);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+  }
+
+  .ProseMirror table .column-resize-handle {
+    background: hsl(var(--primary));
+    bottom: -2px;
+    position: absolute;
+    right: -2px;
+    top: 0;
+    width: 4px;
+    z-index: 20;
+  }
+
+  .ProseMirror table p {
+    margin: 0;
+  }
   .typography {
-    max-width: 65ch;
     color: var(--color-foreground);
+    width: 100%;
+    max-width: none;
+  }
+  
+  .typography h1:not(.not-typography h1),
+  .typography h2:not(.not-typography h2),
+  .typography h3:not(.not-typography h3),
+  .typography h4:not(.not-typography h4),
+  .typography h5:not(.not-typography h5),
+  .typography h6:not(.not-typography h6) {
+    max-width: none;
+  }
+  
+  .typography p:not(.not-typography p) {
+    max-width: none;
+  }
+  
+  .typography ul:not(.not-typography ul),
+  .typography ol:not(.not-typography ol) {
+    max-width: none;
   }
   .typography h1:not(.not-typography h1) {
     scroll-margin: calc(var(--spacing) * 20);

@@ -1,153 +1,263 @@
 "use client";
 
-import { useState } from "react";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
+import CodeBlock from "@tiptap/extension-code-block";
+import Color from "@tiptap/extension-color";
+import Heading from "@tiptap/extension-heading";
+import Highlight from "@tiptap/extension-highlight";
+import HorizontalRule from "@tiptap/extension-horizontal-rule";
+import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
+import Strike from "@tiptap/extension-strike";
+import Subscript from "@tiptap/extension-subscript";
+import Superscript from "@tiptap/extension-superscript";
+import {
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@tiptap/extension-table";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
+import TextAlign from "@tiptap/extension-text-align";
+import { TextStyle } from "@tiptap/extension-text-style";
+import Underline from "@tiptap/extension-underline";
+import { type Editor, EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { Copy } from "lucide-react";
+import { useRef, useState, useImperativeHandle, forwardRef, useEffect, useCallback } from "react";
+
+import { toast } from "sonner";
+import TurndownService from "turndown";
+import EditorToolbar from "./editor-toolbar";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
-import { Bold, Italic, List, ListOrdered, Quote, Undo, Redo } from "lucide-react";
 
-interface BlogEditorProps {
+type BlogEditorProps = {
   content?: string;
   onChange?: (content: string) => void;
   onSave?: (content: string) => void;
+  onSaveExtended?: (data: { html: string; json: unknown }) => void;
   placeholder?: string;
   maxLength?: number;
-}
+};
 
-export default function BlogEditor({
+const BlogEditorComponent = function BlogEditor({
   content = "",
   onChange,
   onSave,
+  onSaveExtended,
   placeholder = "Start writing your blog post...",
-  maxLength = 10000,
-}: BlogEditorProps) {
-  const [isEditing, setIsEditing] = useState(false);
+  maxLength = 10_000,
+}: BlogEditorProps, ref: React.ForwardedRef<{ handleSave: () => void }>) {
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const [_showFloatingToolbar, setShowFloatingToolbar] = useState(false);
+  const [_selectionCoords, setSelectionCoords] = useState({ x: 0, y: 0 });
+  const editorRef = useRef<HTMLDivElement>(null);
+  const toolbarRef = useRef<HTMLDivElement>(null);
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        heading: {
+          levels: [1, 2, 3, 4, 5, 6],
+        },
+        paragraph: {
+          HTMLAttributes: {
+            class: "leading-7 [&:not(:first-child)]:mt-6",
+          },
+        },
+        bulletList: {
+          HTMLAttributes: {
+            class: "list-disc list-inside",
+          },
+        },
+        orderedList: {
+          HTMLAttributes: {
+            class: "list-decimal list-inside",
+          },
+        },
+        blockquote: {
+          HTMLAttributes: {
+            class: "mt-6 border-l-2 pl-6 italic",
+          },
+        },
+        codeBlock: {
+          HTMLAttributes: {
+            class:
+              "relative rounded bg-muted px-3.5 py-2 font-mono text-sm font-semibold",
+          },
+        },
+        horizontalRule: {
+          HTMLAttributes: {
+            class: "my-4 hr",
+          },
+        },
+      }),
       Placeholder.configure({
         placeholder,
       }),
       CharacterCount.configure({
         limit: maxLength,
       }),
+      Link.configure({
+        openOnClick: false,
+        autolink: true,
+        linkOnPaste: true,
+      }),
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+      }),
+      Table.configure({
+        resizable: true,
+      }),
+      TableRow,
+      TableCell,
+      TableHeader,
+      Underline,
+      Highlight.configure({
+        multicolor: true,
+      }),
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+      CodeBlock,
+      HorizontalRule,
+      Strike,
+      Subscript,
+      Superscript,
+      Color,
+      TextStyle,
+      TaskList.configure({
+        HTMLAttributes: {
+          class: "task-list",
+        },
+      }),
+      TaskItem.configure({
+        HTMLAttributes: {
+          class: "task-item",
+        },
+        nested: true,
+      }),
+      Heading.configure({
+        levels: [1, 2, 3, 4, 5, 6],
+      }),
     ],
     content,
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onChange?.(editor.getHTML());
+      updateFloatingToolbar(editor);
+    },
+    onSelectionUpdate: ({ editor }) => {
+      updateFloatingToolbar(editor);
+    },
+    onFocus: ({ editor }) => {
+      updateFloatingToolbar(editor);
     },
     editorProps: {
       attributes: {
-        class: "prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none focus:outline-none min-h-[200px] p-4",
+        class: "ProseMirror focus:outline-none min-h-[400px] p-4", // Simplified initial class
       },
     },
   });
 
-  const handleSave = () => {
-    onSave?.(editor?.getHTML() || "");
-    setIsEditing(false);
+  const updateFloatingToolbar = (editor: Editor) => {
+    if (!(editorRef.current && toolbarRef.current)) {
+      return;
+    }
+
+    const { from, to } = editor.state.selection;
+
+    if (from === to) {
+      // No text selected
+      setShowFloatingToolbar(false);
+      return;
+    }
+
+    // Get the selection coordinates
+    const coords = editor.view.coordsAtPos(from);
+    const containerCoords = editorRef.current.getBoundingClientRect();
+
+    setSelectionCoords({
+      x: coords.left - containerCoords.left + (coords.right - coords.left) / 2,
+      y: coords.top - containerCoords.top - 60,
+    });
+    setShowFloatingToolbar(true);
   };
 
-  const handleCancel = () => {
-    setIsEditing(false);
-    onChange?.(content);
+  const handleSave = () => {
+    const html = editor?.getHTML() || "";
+    const json = editor?.getJSON() as unknown;
+    onSaveExtended?.({ html, json });
+    onSave?.(html);
   };
+
+  // Auto-save functionality
+  useEffect(() => {
+    if (!editor || !onSaveExtended) return;
+
+    let saveTimeout: NodeJS.Timeout;
+    
+    const handleUpdate = () => {
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(async () => {
+        const html = editor.getHTML() || "";
+        const json = editor.getJSON() as unknown;
+        setIsAutoSaving(true);
+        try {
+          await onSaveExtended({ html, json });
+        } finally {
+          setTimeout(() => setIsAutoSaving(false), 1000);
+        }
+      }, 2000); // Auto-save after 2 seconds of inactivity
+    };
+
+    editor.on('update', handleUpdate);
+    
+    return () => {
+      clearTimeout(saveTimeout);
+      editor.off('update', handleUpdate);
+    };
+  }, [editor, onSaveExtended]);
+
+  
+
+  // Expose save method to parent component via ref
+  useImperativeHandle(ref, () => ({
+    handleSave
+  }));
 
   if (!editor) {
     return <div>Loading editor...</div>;
   }
 
-  return (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="border rounded-lg overflow-hidden">
-        {/* Toolbar */}
-        <div className="flex items-center gap-2 p-3 border-b bg-gray-50 dark:bg-gray-800">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            className={editor.isActive("bold") ? "bg-gray-200 dark:bg-gray-700" : ""}
-          >
-            <Bold className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={editor.isActive("italic") ? "bg-gray-200 dark:bg-gray-700" : ""}
-          >
-            <Italic className="h-4 w-4" />
-          </Button>
-          <Separator orientation="vertical" className="h-6" />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className={editor.isActive("bulletList") ? "bg-gray-200 dark:bg-gray-700" : ""}
-          >
-            <List className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={editor.isActive("orderedList") ? "bg-gray-200 dark:bg-gray-700" : ""}
-          >
-            <ListOrdered className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            className={editor.isActive("blockquote") ? "bg-gray-200 dark:bg-gray-700" : ""}
-          >
-            <Quote className="h-4 w-4" />
-          </Button>
-          <Separator orientation="vertical" className="h-6" />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().undo().run()}
-            disabled={!editor.can().undo()}
-          >
-            <Undo className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().redo().run()}
-            disabled={!editor.can().redo()}
-          >
-            <Redo className="h-4 w-4" />
-          </Button>
-          <div className="ml-auto text-sm text-gray-500 dark:text-gray-400">
-            {editor.storage.characterCount.characters()} / {maxLength}
-          </div>
-        </div>
+return (
+    <div className="relative w-full">
+      <div className="overflow-hidden rounded-lg border bg-background">
+        {/* Main Toolbar */}
+        <EditorToolbar 
+          editor={editor} 
+          onSave={handleSave}
+          isSaving={isAutoSaving}
+          saveStatus={isAutoSaving ? 'idle' : 'idle'}
+        />
 
         {/* Editor Content */}
-        <div className="p-4 min-h-[300px]">
+        <div className="min-h-[400px] p-6 w-full" ref={editorRef}>
           <EditorContent
+            className="typography focus:outline-none w-full"
             editor={editor}
-            className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none focus:outline-none"
           />
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex justify-end gap-2 p-3 border-t bg-gray-50 dark:bg-gray-800">
-          <Button variant="outline" onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button onClick={handleSave}>
-            Save
-          </Button>
         </div>
       </div>
     </div>
   );
-}
+};
+
+const BlogEditor = forwardRef(BlogEditorComponent);
+BlogEditor.displayName = "BlogEditor";
+
+export default BlogEditor;

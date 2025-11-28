@@ -1,6 +1,6 @@
 {
-  "id": "3084d78d-2531-4fd8-b2ee-a89dbde50c89",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "f34c343b-8c07-4eed-b506-b5e267c938dc",
+  "prevId": "187a2682-015d-4619-a9fe-23a57569ce7e",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -139,6 +139,21 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "tiptap_content": {
+          "name": "tiptap_content",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'"
+        },
+        "content_type": {
+          "name": "content_type",
+          "type": "content_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'blog'"
         },
         "author": {
           "name": "author",
@@ -373,7 +388,13 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.content_type": {
+      "name": "content_type",
+      "schema": "public",
+      "values": ["blog", "thread"]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

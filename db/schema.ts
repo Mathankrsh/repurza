@@ -1,5 +1,15 @@
 import { relations } from "drizzle-orm";
-import { boolean, jsonb, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  jsonb,
+  pgEnum,
+  pgTable,
+  serial,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
+
+export const contentTypeEnum = pgEnum("content_type", ["blog", "thread"]);
 
 export const blogs = pgTable("blogs", {
   id: serial("id").primaryKey(),
@@ -10,6 +20,7 @@ export const blogs = pgTable("blogs", {
   title: text("title").notNull(),
   content: text("content").notNull(),
   tiptapContent: jsonb("tiptap_content").default("{}").notNull(),
+  contentType: contentTypeEnum("content_type").default("blog").notNull(),
   author: text("author").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

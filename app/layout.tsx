@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
+import Script from "next/script";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { Footer } from "@/components/footer";
@@ -102,6 +104,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {process.env.NODE_ENV === "development" && (
+          <Script
+            src="//unpkg.com/react-grab/dist/index.global.js"
+            crossOrigin="anonymous"
+            strategy="beforeInteractive"
+          />
+        )}
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -111,12 +122,13 @@ export default function RootLayout({
           disableTransitionOnChange
           enableSystem
         >
-          <Header />
-          <main className="mt-10">{children}</main>
-          <Footer />
-
-          <Toaster />
-          <Analytics />
+          <Suspense fallback={null}>
+            <Header />
+            <main className="mt-10">{children}</main>
+            <Footer />
+            <Toaster />
+            <Analytics />
+          </Suspense>
         </ThemeProvider>
       </body>
     </html>

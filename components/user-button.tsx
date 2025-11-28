@@ -29,9 +29,9 @@ export function UserButton() {
     <>
       {session ? (
         <>
-          <Link href="/blogs">
+          <Link href="/library">
             <Button size="sm" variant="ghost">
-              My Blogs
+              Library
             </Button>
           </Link>
           <Button onClick={handleLogout} size="sm" variant="ghost">
