@@ -21,6 +21,7 @@ import type { SelectBlog } from "@/db/schema";
 import { authClient } from "@/lib/auth-client";
 import { checkBlogExists } from "@/server/blogs";
 import { extractVideoId } from "@/lib/youtube";
+import { BlogCard } from "../blog-card";
 import { ButtonGroup } from "../ui/button-group";
 
 const formSchema = z.object({
@@ -49,6 +50,12 @@ type GenerateResponse = {
 export function MainForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [blog, setBlog] = useState<SelectBlog | null>(null);
+  const [thread, setThread] = useState<SelectBlog | null>(null);
+  const [bothContent, setBothContent] = useState<{
+    blog: SelectBlog;
+    thread: SelectBlog;
+  } | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
