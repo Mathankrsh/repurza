@@ -11,7 +11,7 @@ export default function LibraryPage() {
           Your generated blog posts and threads organized by YouTube video.
         </p>
       </div>
-      
+
       <Suspense
         fallback={
           <div className="space-y-4">

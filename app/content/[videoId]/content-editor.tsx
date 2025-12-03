@@ -24,19 +24,21 @@ interface ContentEditorProps {
 
 export function ContentEditor({ videoData, contentType }: ContentEditorProps) {
   const [isSaving, setIsSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">(
+    "idle"
+  );
 
   const content = contentType === "blog" ? videoData.blog : videoData.thread;
 
-// Use the existing markdown library for reliable conversion
+  // Use the existing markdown library for reliable conversion
   const processMarkdownToHtml = (markdown: string): string => {
     if (!markdown) return "";
-    
+
     const contentType = getContentType(markdown);
     if (contentType === "html") {
       return markdown;
     }
-    
+
     return markdownToHtmlSync(markdown);
   };
 
@@ -45,7 +47,7 @@ export function ContentEditor({ videoData, contentType }: ContentEditorProps) {
     if (!content) return "";
     return processMarkdownToHtml(content.content);
   }, [content, contentType]);
-  
+
   if (!content) {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -61,29 +63,33 @@ export function ContentEditor({ videoData, contentType }: ContentEditorProps) {
     );
   }
 
-  const handleSave = async ({ html, json }: { html: string; json: unknown }) => {
+  const handleSave = async ({
+    html,
+    json,
+  }: {
+    html: string;
+    json: unknown;
+  }) => {
     setIsSaving(true);
-    setSaveStatus('idle');
+    setSaveStatus("idle");
     try {
       await updateBlogContent(content.slug, { html, json });
-      setSaveStatus('success');
+      setSaveStatus("success");
       toast.success("Content saved successfully!");
-      
+
       // Reset status after 3 seconds
-      setTimeout(() => setSaveStatus('idle'), 3000);
+      setTimeout(() => setSaveStatus("idle"), 3000);
     } catch (error) {
       console.error("Failed to save content:", error);
-      setSaveStatus('error');
+      setSaveStatus("error");
       toast.error("Failed to save content. Please try again.");
-      
+
       // Reset status after 3 seconds
-      setTimeout(() => setSaveStatus('idle'), 3000);
+      setTimeout(() => setSaveStatus("idle"), 3000);
     } finally {
       setIsSaving(false);
     }
   };
-
-  
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
@@ -100,18 +106,25 @@ export function ContentEditor({ videoData, contentType }: ContentEditorProps) {
                   {content.title.replace(/ \(Blog\)| \(Thread\)$/, "")}
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  By {content.author} • {new Date(content.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
+                  By {content.author} •{" "}
+                  {new Date(content.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
                   })}
                 </p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <div className="text-sm text-muted-foreground">
-                {isSaving ? "Saving..." : saveStatus === 'success' ? "Saved!" : saveStatus === 'error' ? "Error occurred" : ""}
+                {isSaving
+                  ? "Saving..."
+                  : saveStatus === "success"
+                    ? "Saved!"
+                    : saveStatus === "error"
+                      ? "Error occurred"
+                      : ""}
               </div>
             </div>
           </div>

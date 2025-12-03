@@ -41,10 +41,15 @@ type EditorToolbarProps = {
   editor: any;
   onSave?: () => void;
   isSaving?: boolean;
-  saveStatus?: 'idle' | 'success' | 'error';
+  saveStatus?: "idle" | "success" | "error";
 };
 
-export default function EditorToolbar({ editor, onSave, isSaving = false, saveStatus = 'idle' }: EditorToolbarProps) {
+export default function EditorToolbar({
+  editor,
+  onSave,
+  isSaving = false,
+  saveStatus = "idle",
+}: EditorToolbarProps) {
   if (!editor) {
     return null;
   }
@@ -53,13 +58,13 @@ export default function EditorToolbar({ editor, onSave, isSaving = false, saveSt
     try {
       const html = editor.getHTML() || "";
       const turndownService = new TurndownService({
-        headingStyle: 'atx',
-        bulletListMarker: '*',
-        codeBlockStyle: 'fenced'
+        headingStyle: "atx",
+        bulletListMarker: "*",
+        codeBlockStyle: "fenced",
       });
-      
+
       const markdown = turndownService.turndown(html);
-      
+
       await navigator.clipboard.writeText(markdown);
       toast.success("Content copied as markdown!");
     } catch (error) {
@@ -425,17 +430,23 @@ export default function EditorToolbar({ editor, onSave, isSaving = false, saveSt
           disabled={isSaving}
           size="sm"
           title="Save (Ctrl+S)"
-          variant={saveStatus === 'success' ? 'default' : saveStatus === 'error' ? 'destructive' : 'default'}
+          variant={
+            saveStatus === "success"
+              ? "default"
+              : saveStatus === "error"
+                ? "destructive"
+                : "default"
+          }
         >
           {isSaving ? (
             <>
               <Save className="h-3 w-3 animate-spin" />
             </>
-          ) : saveStatus === 'success' ? (
+          ) : saveStatus === "success" ? (
             <>
               <Save className="h-3 w-3" />
             </>
-          ) : saveStatus === 'error' ? (
+          ) : saveStatus === "error" ? (
             <>
               <Save className="h-3 w-3" />
             </>

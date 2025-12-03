@@ -37,7 +37,10 @@ export async function VideosList() {
         <VideoCard
           key={video.videoId}
           videoId={video.videoId}
-          title={video.latestContent.title.replace(/ \(Blog\)| \(Thread\)$/, "")}
+          title={video.latestContent.title.replace(
+            / \(Blog\)| \(Thread\)$/,
+            ""
+          )}
           author={video.latestContent.author}
           createdAt={video.latestContent.createdAt}
           hasBlog={video.hasBlog}

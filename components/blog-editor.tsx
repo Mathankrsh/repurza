@@ -26,7 +26,14 @@ import Underline from "@tiptap/extension-underline";
 import { type Editor, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Copy } from "lucide-react";
-import { useRef, useState, useImperativeHandle, forwardRef, useEffect, useCallback } from "react";
+import {
+  useRef,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useEffect,
+  useCallback,
+} from "react";
 
 import { toast } from "sonner";
 import TurndownService from "turndown";
@@ -43,14 +50,17 @@ type BlogEditorProps = {
   maxLength?: number;
 };
 
-const BlogEditorComponent = function BlogEditor({
-  content = "",
-  onChange,
-  onSave,
-  onSaveExtended,
-  placeholder = "Start writing your blog post...",
-  maxLength = 10_000,
-}: BlogEditorProps, ref: React.ForwardedRef<{ handleSave: () => void }>) {
+const BlogEditorComponent = function BlogEditor(
+  {
+    content = "",
+    onChange,
+    onSave,
+    onSaveExtended,
+    placeholder = "Start writing your blog post...",
+    maxLength = 10_000,
+  }: BlogEditorProps,
+  ref: React.ForwardedRef<{ handleSave: () => void }>
+) {
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [_showFloatingToolbar, setShowFloatingToolbar] = useState(false);
   const [_selectionCoords, setSelectionCoords] = useState({ x: 0, y: 0 });
@@ -200,7 +210,7 @@ const BlogEditorComponent = function BlogEditor({
     if (!editor || !onSaveExtended) return;
 
     let saveTimeout: NodeJS.Timeout;
-    
+
     const handleUpdate = () => {
       clearTimeout(saveTimeout);
       saveTimeout = setTimeout(async () => {
@@ -215,34 +225,32 @@ const BlogEditorComponent = function BlogEditor({
       }, 2000); // Auto-save after 2 seconds of inactivity
     };
 
-    editor.on('update', handleUpdate);
-    
+    editor.on("update", handleUpdate);
+
     return () => {
       clearTimeout(saveTimeout);
-      editor.off('update', handleUpdate);
+      editor.off("update", handleUpdate);
     };
   }, [editor, onSaveExtended]);
 
-  
-
   // Expose save method to parent component via ref
   useImperativeHandle(ref, () => ({
-    handleSave
+    handleSave,
   }));
 
   if (!editor) {
     return <div>Loading editor...</div>;
   }
 
-return (
+  return (
     <div className="relative w-full">
       <div className="overflow-hidden rounded-lg border bg-background">
         {/* Main Toolbar */}
-        <EditorToolbar 
-          editor={editor} 
+        <EditorToolbar
+          editor={editor}
           onSave={handleSave}
           isSaving={isAutoSaving}
-          saveStatus={isAutoSaving ? 'idle' : 'idle'}
+          saveStatus={isAutoSaving ? "idle" : "idle"}
         />
 
         {/* Editor Content */}

@@ -171,33 +171,37 @@ export async function getVideosByUser() {
 
     allContent.forEach((content) => {
       const baseVideoId = extractBaseVideoId(content.slug);
-      
+
       if (!videosMap.has(baseVideoId)) {
         videosMap.set(baseVideoId, []);
       }
-      
+
       videosMap.get(baseVideoId)!.push(content);
     });
 
     // Convert to array and sort by most recent content
-    const videos = Array.from(videosMap.entries()).map(([videoId, contents]) => {
-      const sortedContents = contents.sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-      
-      return {
-        videoId,
-        contents: sortedContents,
-        latestContent: sortedContents[0],
-        hasBlog: contents.some(c => c.contentType === "blog"),
-        hasThread: contents.some(c => c.contentType === "thread"),
-      };
-    });
+    const videos = Array.from(videosMap.entries()).map(
+      ([videoId, contents]) => {
+        const sortedContents = contents.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+
+        return {
+          videoId,
+          contents: sortedContents,
+          latestContent: sortedContents[0],
+          hasBlog: contents.some((c) => c.contentType === "blog"),
+          hasThread: contents.some((c) => c.contentType === "thread"),
+        };
+      }
+    );
 
     // Sort videos by latest content creation date
-    return videos.sort((a, b) => 
-      new Date(b.latestContent.createdAt).getTime() - 
-      new Date(a.latestContent.createdAt).getTime()
+    return videos.sort(
+      (a, b) =>
+        new Date(b.latestContent.createdAt).getTime() -
+        new Date(a.latestContent.createdAt).getTime()
     );
   } catch (error) {
     throw new Error("Failed to get videos by user", { cause: error });
@@ -208,14 +212,14 @@ export async function getVideosByUser() {
 export async function getVideoContent(videoId: string) {
   try {
     const currentUser = await getCurrentUser();
-    
+
     const allContent = await db
       .select()
       .from(blogs)
       .where(eq(blogs.userId, currentUser.user.id));
 
     // Filter content that belongs to this video
-    const videoContent = allContent.filter(content => {
+    const videoContent = allContent.filter((content) => {
       const baseVideoId = extractBaseVideoId(content.slug);
       return baseVideoId === videoId;
     });
@@ -225,8 +229,8 @@ export async function getVideoContent(videoId: string) {
     }
 
     // Separate blog and thread content
-    const blogContent = videoContent.find(c => c.contentType === "blog");
-    const threadContent = videoContent.find(c => c.contentType === "thread");
+    const blogContent = videoContent.find((c) => c.contentType === "blog");
+    const threadContent = videoContent.find((c) => c.contentType === "thread");
 
     return {
       videoId,

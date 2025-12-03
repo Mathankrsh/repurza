@@ -13,7 +13,9 @@ interface ContentPageClientProps {
   videoData: NonNullable<VideoData>;
 }
 
-export default function ContentPageClient({ videoData }: ContentPageClientProps) {
+export default function ContentPageClient({
+  videoData,
+}: ContentPageClientProps) {
   const [activeContentType, setActiveContentType] = useState<ContentType>(
     videoData.blog ? "blog" : videoData.thread ? "thread" : null
   );

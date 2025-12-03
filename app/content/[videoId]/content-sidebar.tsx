@@ -4,13 +4,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  FileText, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  FileText,
   MessageCircle,
   Home,
-  Library
+  Library,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -36,10 +36,12 @@ export function ContentSidebar({
   onToggleCollapse,
 }: ContentSidebarProps) {
   return (
-    <div className={`
+    <div
+      className={`
       relative border-r bg-muted/20 transition-all duration-300
       ${isCollapsed ? "w-16" : "w-64"}
-    `}>
+    `}
+    >
       {/* Toggle Button */}
       <button
         onClick={onToggleCollapse}
@@ -55,13 +57,23 @@ export function ContentSidebar({
       <div className="flex h-full flex-col p-4">
         {/* Navigation */}
         <div className="space-y-2">
-          <Button asChild variant="ghost" size="sm" className="w-full justify-start">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start"
+          >
             <Link href="/">
               <Home className="h-4 w-4 mr-2" />
               {!isCollapsed && "Home"}
             </Link>
           </Button>
-          <Button asChild variant="ghost" size="sm" className="w-full justify-start">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start"
+          >
             <Link href="/library">
               <Library className="h-4 w-4 mr-2" />
               {!isCollapsed && "Library"}
@@ -74,8 +86,10 @@ export function ContentSidebar({
         {/* Content Type Selector */}
         {!isCollapsed && (
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Content Type</h3>
-            
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Content Type
+            </h3>
+
             <Button
               variant={activeContentType === "blog" ? "default" : "outline"}
               size="sm"
@@ -85,7 +99,11 @@ export function ContentSidebar({
             >
               <FileText className="h-4 w-4 mr-2" />
               Blog Post
-              {hasBlog && <Badge variant="secondary" className="ml-auto">✓</Badge>}
+              {hasBlog && (
+                <Badge variant="secondary" className="ml-auto">
+                  ✓
+                </Badge>
+              )}
             </Button>
 
             <Button
@@ -97,7 +115,11 @@ export function ContentSidebar({
             >
               <MessageCircle className="h-4 w-4 mr-2" />
               Thread
-              {hasThread && <Badge variant="secondary" className="ml-auto">✓</Badge>}
+              {hasThread && (
+                <Badge variant="secondary" className="ml-auto">
+                  ✓
+                </Badge>
+              )}
             </Button>
           </div>
         )}
@@ -134,7 +156,9 @@ export function ContentSidebar({
         {/* Video Info */}
         {!isCollapsed && (
           <div className="mt-auto space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Video ID</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">
+              Video ID
+            </h3>
             <p className="text-xs font-mono bg-muted p-2 rounded">{videoId}</p>
           </div>
         )}
