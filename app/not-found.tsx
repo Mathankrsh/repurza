@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -8,31 +7,21 @@ import {
   EmptyContent,
   EmptyDescription,
   EmptyHeader,
-  EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
 
 export const metadata: Metadata = {
-  title: "404 | OrcDev",
+  title: "404 | Repurpuz",
 };
 
 export default function NotFound() {
   return (
     <Empty>
-      <EmptyHeader>
-        <EmptyMedia>
-          <Image
-            alt="Pixel Orc - 404"
-            height={300}
-            src={"/images/404/pixel-orc.png"}
-            width={300}
-          />
-        </EmptyMedia>
-      </EmptyHeader>
+      <EmptyHeader />
       <EmptyTitle className="font-bold text-2xl tracking-tight sm:text-4xl">
         Uh-oh!
       </EmptyTitle>
-      <EmptyDescription>You are lost.</EmptyDescription>
+      <EmptyDescription>Page not found.</EmptyDescription>
       <EmptyContent>
         <Button variant="outline">
           <Link href="/">Return to the home page</Link>
