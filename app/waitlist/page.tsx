@@ -110,10 +110,6 @@ export default function WaitlistPage() {
         {/* Footer */}
         <footer className="mt-16 pt-8 border-t text-center text-sm text-muted-foreground">
           <p>&copy; 2024 Repurpuz. All rights reserved.</p>
-          <div className="mt-2 space-x-4">
-            <a href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</a>
-            <a href="/terms" className="hover:text-foreground transition-colors">Terms of Service</a>
-          </div>
         </footer>
       </div>
     </div>
