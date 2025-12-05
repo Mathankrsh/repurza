@@ -96,6 +96,19 @@ export const verification = pgTable("verification", {
     .notNull(),
 });
 
+export const waitlist = pgTable("waitlist", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export type SelectWaitlist = typeof waitlist.$inferSelect;
+export type InsertWaitlist = typeof waitlist.$inferInsert;
+
 export const schema = {
   user,
   session,
@@ -103,4 +116,5 @@ export const schema = {
   verification,
   blogs,
   blogsRelations,
+  waitlist,
 };

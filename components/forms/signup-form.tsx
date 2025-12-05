@@ -62,23 +62,31 @@ export function SignupForm({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+    console.log("🔍 [SIGNUP FORM] Starting signup process");
+    console.log("🔍 [SIGNUP FORM] Form values:", { email: values.email, username: values.username });
 
     try {
+      console.log("🔍 [SIGNUP FORM] Calling authClient.signUp.email...");
       const { error } = await authClient.signUp.email({
         email: values.email,
         password: values.password,
         name: values.username,
       });
 
+      console.log("🔍 [SIGNUP FORM] Signup response:", { error });
+
       if (error) {
+        console.error("❌ [SIGNUP FORM] Signup failed:", error);
         toast.error(error.message || "Signup failed");
       } else {
+        console.log("✅ [SIGNUP FORM] Signup successful, email verification should be sent");
         toast.success(
           "Signed up successfully. Please check your email for verification."
         );
         router.push("/");
       }
-    } catch {
+    } catch (err) {
+      console.error("❌ [SIGNUP FORM] Unexpected error during signup:", err);
       toast.error("An unexpected error occurred");
     }
 

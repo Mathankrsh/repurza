@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
-import { Suspense } from "react";
-import Script from "next/script";
-import "./globals.css";
-import { Analytics } from "@vercel/analytics/next";
-import { ConditionalHeader } from "@/components/conditional-header";
+import "../globals.css";
+import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const manrope = Manrope({
@@ -15,23 +12,22 @@ const manrope = Manrope({
 
 export const metadata: Metadata = {
   title: {
-    default: "Repurpuz - Convert Videos to Professional Blog Posts",
+    default: "Repurpuz - Join the Waitlist",
     template: "%s | Repurpuz",
   },
   description:
-    "Transform YouTube videos into well-structured, professional blog posts using AI. Perfect for content creators, developers, and anyone who wants to convert video content into written format with one click.",
+    "Transform YouTube videos into well-structured, professional blog posts, Twitter threads, and LinkedIn posts using AI. Join our waitlist to be the first to know when we launch!",
   keywords: [
     "Repurpuz",
     "YouTube to blog",
     "video to blog",
     "AI blog generator",
     "content creation",
-    "video transcription",
-    "blog writing",
-    "content conversion",
-    "YouTube transcript",
-    "AI writing tool",
-    "video content",
+    "waitlist",
+    "launch",
+    "Twitter threads",
+    "LinkedIn posts",
+    "content repurposing",
   ],
   authors: [{ name: "OrcDev" }],
   creator: "OrcDev",
@@ -45,15 +41,15 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
   ),
   alternates: {
-    canonical: "/",
+    canonical: "/waitlist",
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "/",
-    title: "Repurpuz - Convert Videos to Professional Blog Posts",
+    url: "/waitlist",
+    title: "Repurpuz - Join the Waitlist",
     description:
-      "Transform YouTube videos into well-structured, professional blog posts using AI. Perfect for content creators, developers, and anyone who wants to convert video content into written format with one click.",
+      "Transform YouTube videos into well-structured, professional blog posts, Twitter threads, and LinkedIn posts using AI. Join our waitlist to be the first to know when we launch!",
     siteName: "Repurpuz",
     images: [
       {
@@ -66,9 +62,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Repurpuz - Convert Videos to Professional Blog Posts",
+    title: "Repurpuz - Join the Waitlist",
     description:
-      "Transform YouTube videos into well-structured, professional blog posts using AI. Perfect for content creators, developers, and anyone who wants to convert video content into written format with one click.",
+      "Transform YouTube videos into well-structured, professional blog posts, Twitter threads, and LinkedIn posts using AI. Join our waitlist to be the first to know when we launch!",
     images: ["/images/logo.webp"],
     creator: "@orcdev",
   },
@@ -88,11 +84,10 @@ export const metadata: Metadata = {
     shortcut: "/images/logo.webp",
     apple: "/images/logo.webp",
   },
-  manifest: "/manifest.json",
   category: "technology",
 };
 
-export default function RootLayout({
+export default function WaitlistLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -100,28 +95,21 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {process.env.NODE_ENV === "development" && (
-          <Script
-            src="//unpkg.com/react-grab/dist/index.global.js"
-            crossOrigin="anonymous"
-            strategy="beforeInteractive"
-          />
-        )}
+        <link rel="icon" href="/images/logo.webp" sizes="any" />
+        <link rel="apple-touch-icon" href="/images/logo.webp" />
       </head>
       <body
         className={`${manrope.variable} antialiased bg-background text-foreground`}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           disableTransitionOnChange
-          enableSystem
+          enableSystem={false}
+          forcedTheme="light"
         >
-          <Suspense fallback={null}>
-            <ConditionalHeader />
-            <main className="mt-10">{children}</main>
-            <Analytics />
-          </Suspense>
+          {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

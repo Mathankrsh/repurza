@@ -150,7 +150,7 @@ export function MainForm() {
     <>
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold text-foreground mb-3">
-          YouTube to Blog
+          Repurpuz
         </h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Transform YouTube videos into blog posts and Twitter threads with AI

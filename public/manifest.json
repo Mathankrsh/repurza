@@ -1,6 +1,6 @@
 {
-  "name": "YouTube to Blog",
-  "short_name": "YT2Blog",
+  "name": "Repurpuz",
+  "short_name": "Repurpuz",
   "description": "Transform YouTube videos into well-structured, professional blog posts using AI",
   "start_url": "/",
   "display": "standalone",
@@ -9,13 +9,13 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/youtube-to-blog-logo.png",
+      "src": "/icon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/youtube-to-blog-logo.png",
+      "src": "/icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
